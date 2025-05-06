@@ -1,23 +1,29 @@
-from fastapi import FastAPI, Depends, HTTPException
+from fastapi import FastAPI, Depends, HTTPException, status
 from sqlmodel.ext.asyncio.session import AsyncSession
-from enum import Enum
 from data.models import User, Task, TaskState
 from operations.operations_db import create_task, create_user, get_all_tasks, get_task_by_id, update_task_state, set_user_premium, get_active_users, get_active_and_premium_users
 from utils.conection_db import get_session
 
+import asyncio
+from utils.conection_db import init_db
+
 app = FastAPI()
+
+@app.on_event("startup")
+async def on_startup():
+    await init_db()
 
 @app.get("/")
 async def root():
     return {"message": "Hello World"}
 
 # Metodo POST para adicionar un usuario
-@app.post("/users/")
+@app.post("/users/", status_code=status.HTTP_201_CREATED)
 async def add_user(user: User, session: AsyncSession = Depends(get_session)):
     return await create_user(user, session)
 
 # Metodo POST para adicionar una tarea
-@app.post("/tasks/")
+@app.post("/tasks/", status_code=status.HTTP_201_CREATED)
 async def add_task(task: Task, session: AsyncSession = Depends(get_session)):
     return await create_task(task, session)
 
