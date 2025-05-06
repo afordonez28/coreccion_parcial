@@ -7,6 +7,10 @@ from utils.conection_db import get_session
 
 app = FastAPI()
 
+@app.get("/")
+async def root():
+    return {"message": "Hello World"}
+
 # Metodo POST para adicionar un usuario
 @app.post("/users/")
 async def add_user(user: User, session: AsyncSession = Depends(get_session)):
