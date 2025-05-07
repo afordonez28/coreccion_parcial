@@ -15,7 +15,7 @@ async def on_startup():
 
 @app.get("/")
 async def root():
-    return {"message": "Lozano es bobito"}
+    return {"message": "world hello"}
 
 # Metodo POST para adicionar un usuario
 @app.post("/users/", status_code=status.HTTP_201_CREATED)
